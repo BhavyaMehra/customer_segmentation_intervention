@@ -1,0 +1,5 @@
+Segment,Treatment,Customers,Baseline Conv %,Treatment Conv %,Incremental Conversions,Incremental Revenue,Campaign Cost,Net ROI %
+Champions,Loyalty Program Upsell,713,25.0,35.0,71,576531.8,10695,5290.67
+Promising,Cross-sell Campaign,810,10.0,18.0,65,35510.4,6480,448.0
+At-Risk,Reactivation Discount Voucher,1193,5.0,17.0,143,257831.16,11930,2061.2
+Lost,Win-back Deep Discount,1622,2.0,7.000000000000001,81,27736.2,8110,242.0
