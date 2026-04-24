@@ -43,9 +43,9 @@ class CustomerRFM(BaseModel):
         }
 
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 def health():
-    return {'status': 'ok'}
+    return {"status": "ok"}
 
 
 # Prediction endpoint
