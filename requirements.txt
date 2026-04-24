@@ -7,3 +7,5 @@ xgboost
 torch
 openpyxl
 jupyter
+fastapi
+uvicorn
