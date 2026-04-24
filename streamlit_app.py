@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 
-API_URL = "https://customer-segmentation-interventions.onrender.com/predict"
+API_URL = "https://customer-segmentation-intervention.onrender.com/predict"
 
 st.set_page_config(
     page_title='Customer Segmentation and Intervention',
@@ -26,7 +26,15 @@ with col2:
     frequency = st.number_input("Frequency (number of invoices)", min_value=1, max_value=210, value=3)
 
 with col3:
-    monetary = st.number_input("Monetary (total spend INR)", min_value=0.0, max_value=300000.0, value=500.0)
+    currency = st.selectbox("Currency", ["GBP (£)", "INR (₹)"])
+    if currency == "INR (₹)":
+        monetary = st.number_input("Monetary (total spend ₹)", min_value=0.0, max_value=30000000.0, value=53000.0)
+        monetary_gbp = monetary / 106
+    else:
+        monetary = st.number_input("Monetary (total spend £)", min_value=0.0, max_value=300000.0, value=500.0)
+        monetary_gbp = monetary
+
+st.caption("INR to GBP conversion uses approximate rate of ₹106 = £1")
 
 st.divider()
 
@@ -40,14 +48,11 @@ if st.button("Predict Segment", type="primary"):
                 json={
                     "recency": recency,
                     "frequency": frequency,
-                    "monetary": monetary
+                    "monetary": monetary_gbp
                 },
                 timeout=60
             )
 
-            st.write(f"Status code: {response.status_code}")
-            st.write(f"Raw response: {response.text}")
-            
             result = response.json()
 
             segment = result["segment"]
@@ -75,8 +80,8 @@ if st.button("Predict Segment", type="primary"):
                 st.metric("Treatment Conversion Rate", f"{treatment_rate*100:.0f}%")
 
             with col2:
-                st.metric("Expected Incremental Revenue", f"£{revenue:,.2f}")
-                st.metric("Campaign Cost per Customer", f"£{cost}")
+                st.metric("Expected Incremental Revenue", f"INR{revenue:,.2f}")
+                st.metric("Campaign Cost per Customer", f"INR{cost}")
                 st.metric("Lift", f"+{(treatment_rate - baseline)*100:.0f}pp")
 
         except Exception as e:
