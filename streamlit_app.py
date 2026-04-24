@@ -20,10 +20,10 @@ st.subheader("Customer RFM Input")
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    recency = st.number_input("Recency (days since last purchase)", min_value=0, max_value=400, value=30)
+    recency = st.number_input("Recency (days since last purchase)", min_value=0, max_value=750, value=50)
 
 with col2:
-    frequency = st.number_input("Frequency (number of invoices)", min_value=1, max_value=210, value=3)
+    frequency = st.number_input("Frequency (number of invoices)", min_value=1, max_value=210, value=10)
 
 with col3:
     currency = st.selectbox("Currency", ["GBP (£)", "INR (₹)"])

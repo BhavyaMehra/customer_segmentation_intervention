@@ -16,10 +16,6 @@ app = FastAPI(
 
 
 # Load models at startup
-
-with open('data/processed/scaler.pkl', 'rb') as f:
-    scaler = pickle.load(f)
-
 with open('data/processed/xgb.pkl', 'rb') as f:
     xgb_model = pickle.load(f)
 
@@ -56,14 +52,8 @@ def predict_customer(data: CustomerRFM):
         input_data = np.array([[data.recency, data.frequency, data.monetary]],
                               dtype=float)
 
-        # Log transformation
-        input_log = np.log1p(input_data)
-
-        # Scale
-        scaled = scaler.transform(input_log)
-
         # Predict
-        pred = xgb_model.predict(scaled)
+        pred = xgb_model.predict(input_data)
 
         # Decode label
         segment = le.inverse_transform(pred)[0]
