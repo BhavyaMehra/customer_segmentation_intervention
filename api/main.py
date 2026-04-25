@@ -50,7 +50,7 @@ def predict_customer(data: CustomerRFM):
     try:
         # Convert to array
         input_data = np.array([[data.recency, data.frequency, data.monetary]],
-                              dtype=float)
+                              dtype=int)
 
         # Predict
         pred = xgb_model.predict(input_data)
