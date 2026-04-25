@@ -62,6 +62,18 @@ if st.button("Predict Segment", type="primary"):
             revenue = result["expected_incremental_revenue"]
             cost = result["campaign_cost_per_customer"]
 
+            rate = 106
+
+            if currency == "INR (₹)":
+                revenue_display = revenue * rate
+                cost_display = cost * rate
+                currency_symbol = "₹"
+            else:
+                revenue_display = revenue
+                cost_display = cost
+                currency_symbol = "£"
+            
+
             segment_colors = {
                 "Champions": "🟢",
                 "Promising": "🔵",
@@ -72,16 +84,17 @@ if st.button("Predict Segment", type="primary"):
             st.subheader("Prediction Result")
             st.markdown(f"## {segment_colors.get(segment, '')} {segment}")
             
+            st.info(f"Recommended Treatment: **{treatment}**")
+
             col1, col2 = st.columns(2)
             
             with col1:
-                st.metric("Recommended Treatment", treatment)
                 st.metric("Baseline Conversion Rate", f"{baseline*100:.0f}%")
                 st.metric("Treatment Conversion Rate", f"{treatment_rate*100:.0f}%")
 
             with col2:
-                st.metric("Expected Incremental Revenue", f"INR{revenue:,.2f}")
-                st.metric("Campaign Cost per Customer", f"INR{cost}")
+                st.metric("Expected Incremental Revenue", f"{currency_symbol}{revenue_display:,.2f}")
+                st.metric("Campaign Cost per Customer", f"{currency_symbol}{cost_display}")
                 st.metric("Lift", f"+{(treatment_rate - baseline)*100:.0f}pp")
 
         except Exception as e:

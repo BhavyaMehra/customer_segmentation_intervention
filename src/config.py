@@ -28,7 +28,7 @@ MODEL_CONFIG = {
 INTERVENTIONS = {
     "Champions": {
         "treatment": "Loyalty Program Upsell",
-        "baseline_rate": 0.25,                  # Probability a customer converts with no intervention (From study)
+        "baseline_rate": 0.25,                      # Probability a customer converts with no intervention (From study)
         "lift_rate": 0.10,                          # Additional conversion probability the treatment adds on top of baseline (From study)
         "avg_order_value": 8086,                    # Derived from our own clustering in notebook 03 (From our analysis)
         "cost_per_customer": 15                     # Cost of delivering the intervention (From study)
