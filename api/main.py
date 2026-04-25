@@ -27,14 +27,14 @@ with open('data/processed/label_encoder.pkl', 'rb') as f:
 class CustomerRFM(BaseModel):
     recency: int
     frequency: int
-    monetary: float
+    monetary: int
 
     class Config:
         json_schema_extra = {
             'example': {
                 'recency': 45,
                 'frequency': 3,
-                'monetary': 850.0
+                'monetary': 850
             }
         }
 

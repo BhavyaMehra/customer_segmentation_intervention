@@ -25,8 +25,7 @@ st.set_page_config(
 
 # Header
 st.title("Customer Segmentation and Intervention Recommender")
-st.markdown("Enter a customer's RFM values to predict their segment and get a targeted intervention recommendation.")
-st.divider()
+st.markdown("Enter how recently a customer bought, how often they buy, and how much they spend. We will tell you which customer group they belong to and what marketing action is most likely to bring them back.")
 
 # Main two columns
 left_col, right_col = st.columns([4, 6])
@@ -46,10 +45,10 @@ with left_col:
     with col3:
         currency = st.selectbox("Currency", ["GBP (£)", "INR (₹)"])
         if currency == "INR (₹)":
-            monetary = st.number_input("Monetary (total spend ₹)", min_value=0.0, max_value=30000000.0, value=53000.0)
+            monetary = st.number_input("Monetary (total spend ₹)", min_value=0, max_value=30000000, value=53000)
             monetary_gbp = monetary / 106
         else:
-            monetary = st.number_input("Monetary (total spend £)", min_value=0.0, max_value=300000.0, value=500.0)
+            monetary = st.number_input("Monetary (total spend £)", min_value=0, max_value=300000.0, value=500)
             monetary_gbp = monetary
 
 
@@ -57,7 +56,7 @@ with left_col:
     st.caption('Recency capped at 373 days, maximum the model saw during training.')
 
 
-    run_sim = st.checkbox('Show best and worst case scenario (Monte Carlo Simulation)')
+    run_sim = st.checkbox('Show best and worst case ROI scenarios for this campaign')
 
     predict_clicked = st.button('Predict Segment', type='primary')
 
@@ -138,14 +137,14 @@ with right_col:
                     prob_positive = (sim_results > 0).mean() * 100
 
                     st.divider()
-                    st.subheader('Scenario Analysis')
+                    st.subheader('Campaign ROI: Best and Worst Case')
 
                     col1, col2, col3 = st.columns(3)
                     col1.metric("Worst Case ROI (5% chance of falling below)", f"{p5:.0f}%")
                     col2.metric("Best Case ROI (95% chance of staying below)", f"{p95:.0f}%")
                     col3.metric("Likelihood of Positive ROI", f"{prob_positive:.1f}%")
 
-                    st.caption("Scenarios estimated by varying the expected response rate across 500 simulations.")
+                    st.caption("Scenarios estimated by varying the expected response rate across 500 Monte Carlo simulations.")
 
                 st.caption("Per campaign cycle, typically 30 to 90 days. Based on customer's actual spend value.")
             except Exception as e:
