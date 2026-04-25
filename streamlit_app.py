@@ -45,10 +45,10 @@ with left_col:
     with col3:
         currency = st.selectbox("Currency", ["GBP (£)", "INR (₹)"])
         if currency == "INR (₹)":
-            monetary = st.number_input("Monetary (total spend ₹)", min_value=0, max_value=30000000, value=53000)
+            monetary = st.number_input("Monetary (total spend ₹)", min_value=0, max_value=30000000, value=53000, step=1000)
             monetary_gbp = monetary / 106
         else:
-            monetary = st.number_input("Monetary (total spend £)", min_value=0, max_value=300000.0, value=500)
+            monetary = st.number_input("Monetary (total spend £)", min_value=0, max_value=300000, value=500, step=10)
             monetary_gbp = monetary
 
 
