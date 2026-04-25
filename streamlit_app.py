@@ -93,6 +93,7 @@ with right_col:
                 treatment_rate = result["treatment_conv_rate"]
                 revenue = result["expected_incremental_revenue"]
                 cost = result["campaign_cost_per_customer"]
+                avg_order_value = result['avg_order_value']
 
                 rate = 106
 
@@ -127,7 +128,7 @@ with right_col:
 
                 lift = treatment_rate - baseline
                 incremental_conversions = round(lift * 100)
-                customer_incremental_revenue = lift * monetary if currency == "GBP (£)" else lift * monetary_gbp * 106
+                customer_incremental_revenue = lift * avg_order_value if currency == "GBP (£)" else lift * monetary_gbp * 106
                 roi = ((customer_incremental_revenue - cost_display) / cost_display * 100)
 
                 col1, col2 = st.columns(2)
@@ -146,7 +147,6 @@ with right_col:
                         st.metric("Expected ROI (mean estimate)", f"{roi:,.0f}%")
 
                 if run_sim:
-                    avg_order_value = result['avg_order_value']
                     sim_results = simulate_roi(lift, avg_order_value, cost)
                     p5 = np.percentile(sim_results, 5)
                     p95 = np.percentile(sim_results, 95)
