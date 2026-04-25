@@ -100,7 +100,7 @@ if st.button("Predict Segment", type="primary"):
                 with st.container(border=True):
                     st.markdown("**Financial Impact**")
                     st.metric("Expected Incremental Revenue", f"{currency_symbol}{customer_incremental_revenue:,.2f}")
-                    st.metric("Campaign Cost", f"{currency_symbol}{cost_display}")
+                    st.metric("Estimated Campaign Cost Per Customer", f"{currency_symbol}{cost_display}")
                     st.metric("Expected ROI", f"{roi:,.0f}%")
 
             st.caption("Per campaign cycle, typically 30 to 90 days. Based on customer's actual spend value.")
