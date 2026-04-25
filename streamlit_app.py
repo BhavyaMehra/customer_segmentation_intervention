@@ -106,9 +106,24 @@ with right_col:
                     currency_symbol = "£"
 
                 st.subheader("Prediction Result")
-                with st.container(border=True):
-                    st.markdown(f"### Customer Segment: {segment}")
-                    st.markdown(f"#### **Recommended Treatment:** {treatment}")
+                segment_colors = {
+                    "Champions": "#2ecc71",
+                    "Promising": "#3498db",
+                    "At-Risk": "#e67e22",
+                    "Lost": "#e74c3c"
+                }
+                color = segment_colors.get(segment, "#ffffff")
+
+                st.markdown(f"""
+                    <div style='border-left: 5px solid {color}; 
+                                padding: 16px; 
+                                background-color: #161B22; 
+                                border-radius: 6px;
+                                margin-bottom: 16px;'>
+                        <h3 style='color: {color}; margin: 0 0 8px 0;'>Customer Segment: {segment}</h3>
+                        <p style='margin: 0; font-size: 16px;'><strong>Recommended Treatment:</strong> {treatment}</p>
+                    </div>
+                """, unsafe_allow_html=True)
 
                 lift = treatment_rate - baseline
                 incremental_conversions = round(lift * 100)
@@ -131,7 +146,8 @@ with right_col:
                         st.metric("Expected ROI (mean estimate)", f"{roi:,.0f}%")
 
                 if run_sim:
-                    sim_results = simulate_roi(lift, monetary_gbp, cost)
+                    avg_order_value = result['avg_order_value']
+                    sim_results = simulate_roi(lift, avg_order_value, cost)
                     p5 = np.percentile(sim_results, 5)
                     p95 = np.percentile(sim_results, 95)
                     prob_positive = (sim_results > 0).mean() * 100

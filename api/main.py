@@ -70,6 +70,7 @@ def predict_customer(data: CustomerRFM):
             "treatment": intervention["treatment"],
             "baseline_conv_rate": intervention["baseline_rate"],
             "treatment_conv_rate": intervention["baseline_rate"] + intervention["lift_rate"],
+            "avg_order_value": intervention["avg_order_value"],
             "expected_incremental_revenue": round(expected_revenue, 2),
             "campaign_cost_per_customer": intervention["cost_per_customer"]
         }

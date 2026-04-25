@@ -31,28 +31,28 @@ INTERVENTIONS = {
         "baseline_rate": 0.25,                      # Probability a customer converts with no intervention (From study)
         "lift_rate": 0.10,                          # Additional conversion probability the treatment adds on top of baseline (From study)
         "avg_order_value": 8086,                    # Derived from our own clustering in notebook 03 (From our analysis)
-        "cost_per_customer": 15                     # Cost of delivering the intervention (From study)
+        "cost_per_customer": 8                    # Cost of delivering the intervention (From study), Email only, no discount
     },
     "Promising": {
         "treatment": "Cross-sell Campaign",
         "baseline_rate": 0.10,
         "lift_rate": 0.08,
         "avg_order_value": 548,
-        "cost_per_customer": 8
+        "cost_per_customer": 10                     # Email only, no discount
     },
     "At-Risk": {
         "treatment": "Reactivation Discount Voucher",
         "baseline_rate": 0.05,
         "lift_rate": 0.12,
         "avg_order_value": 1801,
-        "cost_per_customer": 10
+        "cost_per_customer": 41                     # Email + expected voucher redemption cost
     },
     "Lost": {
         "treatment": "Win-back Deep Discount",
         "baseline_rate": 0.02,
         "lift_rate": 0.05,
         "avg_order_value": 342,
-        "cost_per_customer": 5
+        "cost_per_customer": 12                   # Email + deep discount redemption
     }
 }
 
