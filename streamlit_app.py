@@ -4,18 +4,32 @@ import numpy as np
 
 API_URL = "https://customer-segmentation-intervention.onrender.com/predict"
 
-def simulate_roi(lift_mean, monetary, cost, n_sims=500):
+def simulate_roi(lift_mean, monetary, cost, n_sims=1000, seed=42):
     """
-    Simulate lift over baseline but on smaller simulations(500) for realistic approach than flat uplift.
+    Simulate lift over baseline but on smaller simulations(1000) for realistic approach than flat uplift.
     """
-    results = []
-    for _ in range(n_sims):
-        sampled_lift = max(0, np.random.normal(lift_mean, 0.02))
-        incremental_revenue = sampled_lift * monetary
-        roi = ((incremental_revenue - cost) / cost * 100)
-        results.append(roi)
+    np.random.seed(seed)
+    samples = np.random.normal(lift_mean, 0.02, n_sims)
+    samples = np.maximum(0, samples) # clip negative
 
-    return np.array(results)  
+    incremental_revenue = samples * monetary
+    roi = ((incremental_revenue - cost) / cost * 100)
+
+    return roi 
+
+
+@st.cache_data(ttl=300) # cache for 5min
+def call_api(recency, frequency, monetary_gbp):
+    response = requests.post(
+                    API_URL,
+                    json={
+                        "recency": recency,
+                        "frequency": frequency,
+                        "monetary": monetary_gbp
+                    },
+                    timeout=10
+                )
+    return response.json() 
 
 
 st.set_page_config(
@@ -75,17 +89,7 @@ with right_col:
     if predict_clicked:
         with st.spinner("Calling model..."):
             try:
-                response = requests.post(
-                    API_URL,
-                    json={
-                        "recency": recency,
-                        "frequency": frequency,
-                        "monetary": monetary_gbp
-                    },
-                    timeout=60
-                )
-
-                result = response.json()
+                result = call_api(recency, frequency, monetary_gbp)
 
                 segment = result["segment"]
                 treatment = result["treatment"]
