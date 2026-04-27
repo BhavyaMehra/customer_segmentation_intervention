@@ -24,15 +24,15 @@ st.set_page_config(
 )
 
 # Header
-st.title("Customer Segmentation and Intervention Recommender")
-st.markdown("Enter how recently a customer bought, how often they buy, and how much they spend. We will tell you which customer group they belong to and what marketing action is most likely to bring them back.")
+st.title("Customer Segmentation and Intervention Recommender", text_alignment='center')
+st.markdown("Enter how recently a customer bought, how often they buy, and how much they spend. We will tell you which customer group they belong to and what marketing action is best suited for them.", text_alignment='center')
 
 # Main two columns
-left_col, right_col = st.columns([4, 6])
+left_col, right_col = st.columns(2)
 
 with left_col:
     # Input sliders
-    st.subheader("Customer RFM Input")
+    st.subheader("Customer Recency, Frequency, Monetary (RFM) Input")
 
     col1, col2, col3 = st.columns(3)
 
@@ -52,8 +52,8 @@ with left_col:
             monetary_gbp = monetary
 
 
-    st.caption("INR to GBP conversion uses approximate rate of ₹106 = £1")
-    st.caption('Recency capped at 373 days, maximum the model saw during training.')
+    st.markdown(f"<p style='font-size: 16px; color: #aaaaaa;'>INR to GBP conversion uses approximate rate of ₹106 = £1</p>", unsafe_allow_html=True)
+    st.markdown(f"<p style='font-size: 16px; color: #aaaaaa;'>Recency capped at 373 days, maximum the model saw during training.</p>", unsafe_allow_html=True)
 
 
     run_sim = st.checkbox('Show best and worst case ROI scenarios for this campaign')
@@ -128,23 +128,19 @@ with right_col:
 
                 lift = treatment_rate - baseline
                 incremental_conversions = round(lift * 100)
-                customer_incremental_revenue = lift * avg_order_value if currency == "GBP (£)" else lift * monetary_gbp * 106
+                customer_incremental_revenue = (lift * avg_order_value if currency == "GBP (£)" else lift * monetary_gbp * 106)
                 roi = ((customer_incremental_revenue - cost_display) / cost_display * 100)
+                extra_converters = round(lift * 100)
 
-                col1, col2 = st.columns(2)
-                with col1:
-                    with st.container(border=True):
-                        st.markdown("**Conversion Impact**")
-                        st.markdown(f"**Without intervention**: **{int(baseline*100)} in 100** customers convert")
-                        st.markdown(f"**With treatment**: **{int(treatment_rate*100)} in 100** customers convert")
-                        st.markdown(f"**Additional conversions**: **{round(lift*100)} per 100** customers contacted")
+                st.markdown(f"Without any campaign, roughly **{int(baseline*100)} in 100** customers like this make a repeat purchase. The **{treatment}** is expected to bring in **{extra_converters} additional customers per 100 contacted**, each spending approximately **{currency_symbol}{int(avg_order_value):,}** on average.")
 
-                with col2:
-                    with st.container(border=True):
-                        st.markdown("**Financial Impact**")
-                        st.metric("Expected Incremental Revenue", f"{currency_symbol}{customer_incremental_revenue:,.2f}")
-                        st.metric("Estimated Campaign Cost Per Customer", f"{currency_symbol}{cost_display}")
-                        st.metric("Expected ROI (mean estimate)", f"{roi:,.0f}%")
+                
+                with st.container(border=True):
+                    m1, m2, m3 = st.columns(3)
+                    m1.metric("Incremental Revenue (per 100 customers)", f"{currency_symbol}{customer_incremental_revenue * 100:,.0f}")
+                    m2.metric("Campaign Cost (per 100 customers)", f"{currency_symbol}{cost_display * 100:.0f}")
+                    m3.metric("Expected Incremental ROI", f"{roi:,.0f}%")
+                    st.markdown(f"<p style='font-size: 16px; color: #aaaaaa;'>Estimated returns if this intervention is run across 100 similar customers.</p", unsafe_allow_html=True)
 
                 if run_sim:
                     sim_results = simulate_roi(lift, avg_order_value, cost)
@@ -156,15 +152,17 @@ with right_col:
                     st.subheader('Campaign ROI: Best and Worst Case')
 
                     col1, col2, col3 = st.columns(3)
-                    col1.metric("Worst Case ROI (5% chance of falling below)", f"{p5:.0f}%")
-                    col2.metric("Best Case ROI (95% chance of staying below)", f"{p95:.0f}%")
+                    col1.metric("Worst Case ROI", f"{p5:.0f}%")
+                    col2.metric("Most likely ROI range upto", f"{p95:.0f}%")
                     col3.metric("Likelihood of Positive ROI", f"{prob_positive:.1f}%")
 
-                    st.caption("Scenarios estimated by varying the expected response rate across 500 Monte Carlo simulations.")
+                    st.markdown(f"<p style='font-size: 16px; color: #aaaaaa;'>In 90% of simulated scenarios, ROI falls between {p5:.0f}% and {p95:.0f}%. Worst case assumes lower than expected customer response.</p>", unsafe_allow_html=True)
+                    st.markdown(f"<p style='font-size: 16px; color: #aaaaaa;'>Scenarios estimated by varying the expected response rate across 500 Monte Carlo simulations.</p>", unsafe_allow_html=True)
 
-                st.caption("Per campaign cycle, typically 30 to 90 days. Based on customer's actual spend value.")
             except Exception as e:
                 st.error(f"API call failed: {str(e)}")
+
+st.markdown("For full source code, visit [GitHub](https://github.com/BhavyaMehra/customer_segmentation_intervention).", text_alignment='center')
 
 
 
