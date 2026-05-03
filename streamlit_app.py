@@ -25,9 +25,9 @@ def call_api(recency, frequency, monetary_gbp):
                     json={
                         "recency": recency,
                         "frequency": frequency,
-                        "monetary": monetary_gbp
+                        "monetary": int(monetary_gbp)
                     },
-                    timeout=10
+                    timeout=60
                 )
     return response.json() 
 
@@ -57,12 +57,12 @@ with left_col:
         frequency = st.number_input("Frequency (number of invoices)", min_value=1, max_value=210, value=10)
 
     with col3:
-        currency = st.selectbox("Currency", ["GBP (£)", "INR (₹)"])
+        currency = st.selectbox("Currency", ["INR (₹)" ,"GBP (£)"])
         if currency == "INR (₹)":
-            monetary = st.number_input("Monetary (total spend ₹)", min_value=0, max_value=30000000, value=53000, step=1000)
+            monetary = st.number_input("Monetary (total spend ₹)", min_value=1, max_value=30000000, value=53000, step=1000)
             monetary_gbp = monetary / 106
         else:
-            monetary = st.number_input("Monetary (total spend £)", min_value=0, max_value=300000, value=500, step=10)
+            monetary = st.number_input("Monetary (total spend £)", min_value=1, max_value=300000, value=500, step=10)
             monetary_gbp = monetary
 
 
@@ -87,7 +87,15 @@ with right_col:
 
     # Predict button and response
     if predict_clicked:
-        with st.spinner("Calling model..."):
+       with st.spinner('Loading prediction...'):
+            try:
+                requests.get(
+                        "https://customer-segmentation-intervention.onrender.com/",
+                        timeout=60
+                        )
+            except:
+                pass
+            
             try:
                 result = call_api(recency, frequency, monetary_gbp)
 
@@ -132,11 +140,15 @@ with right_col:
 
                 lift = treatment_rate - baseline
                 incremental_conversions = round(lift * 100)
-                customer_incremental_revenue = (lift * avg_order_value if currency == "GBP (£)" else lift * monetary_gbp * 106)
+                customer_incremental_revenue = lift * avg_order_value
+                if currency == "INR (₹)":
+                    customer_incremental_revenue = lift * monetary_gbp * 106
+
                 roi = ((customer_incremental_revenue - cost_display) / cost_display * 100)
                 extra_converters = round(lift * 100)
+                avg_order_display = int(avg_order_value * 106) if currency == "INR (₹)" else int(avg_order_value)
 
-                st.markdown(f"Without any campaign, roughly **{int(baseline*100)} in 100** customers like this make a repeat purchase. The **{treatment}** is expected to bring in **{extra_converters} additional customers per 100 contacted**, each spending approximately **{currency_symbol}{int(avg_order_value):,}** on average.")
+                st.markdown(f"Without any campaign, roughly **{int(baseline*100)} in 100** customers like this make a repeat purchase. The **{treatment}** is expected to bring in **{extra_converters} additional customers per 100 contacted**, each spending approximately **{currency_symbol}{int(avg_order_display):,}** on average.")
 
                 
                 with st.container(border=True):
