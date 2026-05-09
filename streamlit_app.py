@@ -4,6 +4,19 @@ import numpy as np
 
 API_URL = "https://customer-segmentation-intervention.onrender.com/predict"
 
+# Wake up render API as soon as streamlit app opens.
+@st.cache_resource
+def wake_up_api():
+    try:
+        requests.get(
+            "https://customer-segmentation-intervention.onrender.com/",
+            timeout=120
+        )
+    except:
+        pass
+
+wake_up_api()
+
 def simulate_roi(lift_mean, monetary, cost, n_sims=1000, seed=42):
     """
     Simulate lift over baseline but on smaller simulations(1000) for realistic approach than flat uplift.
@@ -88,13 +101,6 @@ with right_col:
     # Predict button and response
     if predict_clicked:
        with st.spinner('Loading prediction...'):
-            try:
-                requests.get(
-                        "https://customer-segmentation-intervention.onrender.com/",
-                        timeout=60
-                        )
-            except:
-                pass
             
             try:
                 result = call_api(recency, frequency, monetary_gbp)
@@ -130,11 +136,11 @@ with right_col:
                 st.markdown(f"""
                     <div style='border-left: 5px solid {color}; 
                                 padding: 16px; 
-                                background-color: #161B22; 
+                                background-color: #F8F9FA; 
                                 border-radius: 6px;
                                 margin-bottom: 16px;'>
                         <h3 style='color: {color}; margin: 0 0 8px 0;'>Customer Segment: {segment}</h3>
-                        <p style='margin: 0; font-size: 16px;'><strong>Recommended Treatment:</strong> {treatment}</p>
+                        <p style='margin: 0; font-size: 16px; color: #333333;'><strong>Recommended Treatment:</strong> {treatment}</p>
                     </div>
                 """, unsafe_allow_html=True)
 
