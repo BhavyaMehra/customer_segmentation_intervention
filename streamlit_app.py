@@ -52,7 +52,12 @@ st.set_page_config(
 
 # Header
 st.title("Customer Segmentation and Intervention Recommender", text_alignment='center')
-st.markdown("Enter how recently a customer bought, how often they buy, and how much they spend. We will tell you which customer group they belong to and what marketing action is best suited for them.", text_alignment='center')
+st.markdown(
+    "Enter a customer’s recent purchase activity, buying frequency, and total spend. The app will assign them to a customer segment and suggest the most suitable marketing intervention.",
+    text_alignment='center'
+)
+
+st.caption("Skills: Python · KMeans Clustering · XGBoost · Monte Carlo Simulation · Linear Programming · FastAPI · Streamlit ", text_alignment='center')
 
 # Main two columns
 left_col, right_col = st.columns(2)
@@ -185,6 +190,7 @@ with right_col:
                 st.error(f"API call failed: {str(e)}")
 
 st.markdown("For full source code, visit [GitHub](https://github.com/BhavyaMehra/customer_segmentation_intervention).", text_alignment='center')
+
 
 
 
